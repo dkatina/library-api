@@ -1,0 +1,12 @@
+Design an ERD for a small mechanic shop that includes entities like customers, service_tickets, and mechanics.
+
+Think about the information that should be stored in each table.
+When you last went to a mechanic what information did they collect from you?
+What do you think is important information to document about a service? Maybe a description? You'd probably need the cars VIN?
+For mechanics maybe keep this one simple. For most companies there is a variety of information stored about each employee, for this simple project lets keep the employee info basic: name, email, address, phone, salary etc.
+
+Lastly, think about the relationships these entities have.
+As a customer how many times can I bring my car to the shop?
+How many customers should a single service be attributed to?
+Could a single service require multiple mechanics?
+As a mechanic would I be responsible for multiple services throughout the day?

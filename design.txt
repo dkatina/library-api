@@ -1,0 +1,44 @@
+
+
+Step 1: Identify your Entities
+
+Step 2: Adding in the fields to your Entities 
+- What makes up this entity?
+- Whats import to store for each entity
+
+Step 3: Creating the relationships between entities
+- How are these thing related : Tell the story
+
+Step 4: Drawing the ERD
+- Giving a visual representation
+
+
+Build a library App?
+
+- searching a book
+- searching books with genre
+- viewing books by popularity
+- searching books by authors
+- check if a book is available
+
+- user login\register
+- user updates
+- user delete
+- users can add books to their loan
+
+- user can take out many loans
+- one loan can include many books
+- one book can be loaned out multiple times
+
+Entities:
+user - email, password, DOB, username, address, role
+
+book - title, genre, author, publish_date, age-category
+
+loan - borrower, books, borrow_date, return_date
+
+
+Relationship:
+user -> loan : 1 to many: 1 user can take out many loans, one loan 
+loan -> book : M:M 1 loan can include many books, 1 book can be loaned out many times
+
