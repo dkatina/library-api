@@ -85,7 +85,7 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Users #Creates a schema that validates the data as defined by our Users Model
 
-user_schema = UserSchema() #Creating an instance of my schema that I can actually use to validate, deserialize, and serialze JSON
+user_schema = UserSchema() 
 users_schema = UserSchema(many=True) #Allows this schema to translate a list of User objects all at once
 
 #=========================================== CRUD for Users =========================================
@@ -130,7 +130,22 @@ def delete_user(user_id):
 #Update a User
 @app.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
-    pass
+    user = db.session.get(Users, user_id) #Query for our user to update
+
+    if not user: #Checking if I got a user
+        return jsonify({"message": "user not found"}), 404  #if not return error message
+    
+    try:
+        user_data = user_schema.load(request.json) #Validating updates
+    except ValidationError as e:
+        return jsonify({"message": e.messages}), 400
+    
+    for key, value in user_data.items(): #Looping over attributes and values from user data dictionary
+        setattr(user, key, value) # setting Object, Attribute, Value to replace
+
+    db.session.commit()
+    return user_schema.jsonify(user), 200
+    
 #Query the user by id
 #Validate and Deserialze the updates that they are sending in the body of the request
 #for each of the values that they are sending, we will change the value of the queried object
