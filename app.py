@@ -86,23 +86,46 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         model = Users #Creates a schema that validates the data as defined by our Users Model
 
 user_schema = UserSchema() #Creating an instance of my schema that I can actually use to validate, deserialize, and serialze JSON
-
+users_schema = UserSchema(many=True) #Allows this schema to translate a list of User objects all at once
 
 #=========================================== CRUD for Users =========================================
 
+#CREATE USER ROUTE
 @app.route('/users', methods=['POST']) #route servers as the trigger for the function below.
 def create_user():
     try:
         data = user_schema.load(request.json)
     except ValidationError as e:
-        return jsonify(e.messages) #Returning the error as a response so my client can see whats wrong.
+        return jsonify(e.messages), 400 #Returning the error as a response so my client can see whats wrong.
     
-    print("My Translated Data")
-    print(data)
+
     new_user = Users(**data) #Creating User object
     db.session.add(new_user)
     db.session.commit()
-    return "Creating a user"
+    return user_schema.jsonify(new_user), 201
+
+#Read Users
+@app.route('/users', methods=['GET']) #Endpoint to get user information
+def read_users():
+    users = db.session.query(Users).all()
+    return users_schema.jsonify(users), 200
+
+
+#Read Individual User - Using a Dynamic Endpoint
+@app.route('/users/<int:user_id>', methods=['GET'])
+def read_user(user_id):
+    user = db.session.get(Users, user_id)
+    return user_schema.jsonify(user), 200
+
+
+#Delete a User
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = db.session.get(Users, user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"Successfully deleted user {user_id}"}), 200
+
     
 
 
