@@ -126,6 +126,17 @@ def delete_user(user_id):
     db.session.commit()
     return jsonify({"message": f"Successfully deleted user {user_id}"}), 200
 
+
+#Update a User
+@app.route('/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    pass
+#Query the user by id
+#Validate and Deserialze the updates that they are sending in the body of the request
+#for each of the values that they are sending, we will change the value of the queried object
+#commit the changes
+#return a response
+
     
 
 
