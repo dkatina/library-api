@@ -1,8 +1,10 @@
 from datetime import date
-from flask import Flask 
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Date, ForeignKey, String, Table, Column
+from flask_marshmallow import Marshmallow #Importing marshmallow class
+from marshmallow import ValidationError #Errors that are produced from our schema are called Validation errors
 
 app = Flask(__name__) #Instatiating our Flask app
 
@@ -18,10 +20,12 @@ class Base(DeclarativeBase):
 #Instatiate your SQLAlchemy database:
 
 db = SQLAlchemy(model_class = Base)
+ma = Marshmallow()
 
 #Initialize my extension onto my Flask app
 
 db.init_app(app) #adding the db to the app.
+ma.init_app(app)
 
 loan_books = Table(
     'loan_books',
@@ -71,10 +75,35 @@ class Books(Base):
     author: Mapped[str] = mapped_column(String(500), nullable=True)
 
     #Relationship
-    loans: Mapped[list['Loans']] = relationship('Loans', secondary=loan_books, back_populates='loans')
+    loans: Mapped[list['Loans']] = relationship('Loans', secondary=loan_books, back_populates='books')
 
 
+#Install Marshmellow
+#pip install flask-marshmallow marshmallow-sqlalchemy
 
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Users #Creates a schema that validates the data as defined by our Users Model
+
+user_schema = UserSchema() #Creating an instance of my schema that I can actually use to validate, deserialize, and serialze JSON
+
+
+#=========================================== CRUD for Users =========================================
+
+@app.route('/users', methods=['POST']) #route servers as the trigger for the function below.
+def create_user():
+    try:
+        data = user_schema.load(request.json)
+    except ValidationError as e:
+        return jsonify(e.messages) #Returning the error as a response so my client can see whats wrong.
+    
+    print("My Translated Data")
+    print(data)
+    new_user = Users(**data) #Creating User object
+    db.session.add(new_user)
+    db.session.commit()
+    return "Creating a user"
+    
 
 
 
@@ -83,4 +112,4 @@ with app.app_context():
     db.create_all() #Creating our database tables
 
 
-app.run()
+app.run(debug=True)
