@@ -1,6 +1,6 @@
 from app.blueprints.users import users_bp
 from .schemas import user_schema, users_schema
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from marshmallow import ValidationError
 from app.models import Users, db
 
@@ -66,3 +66,4 @@ def update_user(user_id):
 #for each of the values that they are sending, we will change the value of the queried object
 #commit the changes
 #return a response
+
