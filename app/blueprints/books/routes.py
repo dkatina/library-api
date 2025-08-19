@@ -4,6 +4,7 @@ from .schemas import book_schema, books_schema
 from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import Books, db
+from app.extensions import limiter, cache
 
 #Create Book Endpoint
 @books_bp.route('', methods=['POST'])
@@ -21,6 +22,7 @@ def create_book():
 
 #READ BOOKS
 @books_bp.route('', methods=['GET'])
+@cache.cached(timeout=30)
 def get_books():
     books = db.session.query(Books).all()
     return books_schema.jsonify(books), 200
@@ -28,6 +30,7 @@ def get_books():
 
 #UPDATE BOOK
 @books_bp.route('/<int:book_id>', methods=['PUT'])
+@limiter.limit("30 per hour")
 def update_book(book_id):
     book = db.session.get(Books, book_id)
 
@@ -48,6 +51,7 @@ def update_book(book_id):
 
 #DELETE BOOK
 @books_bp.route('/<int:book_id>', methods=['DELETE'])
+@limiter.limit("8 per day")
 def delete_book(book_id):
     book = db.session.get(Books,book_id)
     db.session.delete(book)

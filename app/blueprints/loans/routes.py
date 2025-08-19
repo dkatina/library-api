@@ -4,6 +4,7 @@ from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import Loans, Books, db
 from app.blueprints.books.schemas import books_schema
+from app.extensions import limiter
 
 #CREATE LOAN
 @loans_bp.route('', methods=['POST'])
@@ -21,6 +22,7 @@ def create_loan():
 
 #Add book to loan
 @loans_bp.route('/<int:loan_id>/add-book/<int:book_id>', methods=['PUT'])
+@limiter.limit("600 per day", override_defaults=True)
 def add_book(loan_id, book_id):
     loan = db.session.get(Loans, loan_id)
     book = db.session.get(Books, book_id)
@@ -38,6 +40,7 @@ def add_book(loan_id, book_id):
 
 #Remove book from loan
 @loans_bp.route('/<int:loan_id>/remove-book/<int:book_id>', methods=['PUT'])
+@limiter.limit("200 per day", override_defaults=True)
 def remove_book(loan_id, book_id):
     loan = db.session.get(Loans, loan_id)
     book = db.session.get(Books, book_id)
