@@ -8,3 +8,4 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 
 user_schema = UserSchema() 
 users_schema = UserSchema(many=True) #Allows this schema to translate a list of User objects all at once
+login_schema = UserSchema(exclude=['username','DOB','address','role'])

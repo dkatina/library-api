@@ -3,6 +3,7 @@ cachelib==0.13.0
 click==8.2.1
 colorama==0.4.6
 Deprecated==1.2.18
+ecdsa==0.19.1
 Flask==3.1.1
 Flask-Caching==2.3.1
 Flask-Limiter==3.12
@@ -19,8 +20,12 @@ marshmallow-sqlalchemy==1.4.2
 mdurl==0.1.2
 ordered-set==4.1.0
 packaging==25.0
+pyasn1==0.6.1
 Pygments==2.19.2
+python-jose==3.5.0
 rich==13.9.4
+rsa==4.9.1
+six==1.17.0
 SQLAlchemy==2.0.43
 typing_extensions==4.14.1
 Werkzeug==3.1.3
