@@ -57,7 +57,7 @@ def read_users():
 @limiter.limit("15 per hour")
 @token_required
 def read_user():
-    user_id = request.id
+    user_id = request.user_id
     user = db.session.get(Users, user_id)
     return user_schema.jsonify(user), 200
 
@@ -78,7 +78,7 @@ def delete_user():
 
 #Update a User
 @users_bp.route('', methods=['PUT'])
-@limiter.limit("1 per month")
+# @limiter.limit("1 per month")
 @token_required
 def update_user():
     user_id = request.user_id
@@ -91,6 +91,8 @@ def update_user():
         user_data = user_schema.load(request.json) #Validating updates
     except ValidationError as e:
         return jsonify({"message": e.messages}), 400
+    
+    user_data['password'] = generate_password_hash(user_data['password']) #resetting the password key's value, to the hash of the current value
     
     for key, value in user_data.items(): #Looping over attributes and values from user data dictionary
         setattr(user, key, value) # setting Object, Attribute, Value to replace

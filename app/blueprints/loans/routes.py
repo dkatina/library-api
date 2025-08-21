@@ -4,7 +4,9 @@ from flask import request, jsonify
 from marshmallow import ValidationError
 from app.models import Loans, Books, db
 from app.blueprints.books.schemas import books_schema
+from app.blueprints.users.schemas import user_schema
 from app.extensions import limiter
+from datetime import datetime, date
 
 #CREATE LOAN
 @loans_bp.route('', methods=['POST'])
@@ -61,3 +63,26 @@ def remove_book(loan_id, book_id):
 def get_loans():
     loans = db.session.query(Loans).all()
     return loans_schema.jsonify(loans), 200
+
+
+#Create an endpoint that will return any over-due loans
+#A over due loan is a loan, that has not been returned and whos due date comes before todays date
+@loans_bp.route('/overdue', methods=['GET'])
+def overdue():
+
+    loans = db.session.query(Loans).all()
+    output = []
+    today = datetime.now().date()
+    for loan in loans:
+        if not loan.return_date and loan.deadline < today:
+            loan = {
+                "loan": loan_schema.dump(loan),
+                "overdue_by": str(loan.deadline - today),
+                "user": user_schema.dump(loan.user),
+                "books": books_schema.dump(loan.books)
+            }
+
+            output.append(loan)
+
+    return jsonify(output)
+
