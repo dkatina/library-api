@@ -40,7 +40,7 @@ def get_books():
 @books_bp.route('/<int:book_id>', methods=['PUT'])
 @limiter.limit("30 per hour")
 def update_book(book_id):
-    book = db.session.get(Books, book_id)
+    book = db.session.get(Books, book_id) #
 
     if not book:
         return jsonify("Invalid book_id"), 404
@@ -52,6 +52,7 @@ def update_book(book_id):
     
     for key, value in data.items():
         setattr(book, key, value) #setting my new attributes
+
 
     db.session.commit()
     return book_schema.jsonify(book), 200
