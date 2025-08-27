@@ -1,0 +1,132 @@
+
+swagger: '2.0'
+info:
+  title: "Library Management API"
+  description: "Used to manage the everyday functionalities of a library"
+  version: "0.0.1"
+
+host: "127.0.0.1:5000" #During development my API is served on my local host (will change when we go to prod)
+schemes:
+  - "http"
+consumes:
+  - "application/json" #MY api recieves json data
+produces:
+  - "application/json" #and produces json data
+
+
+paths: #Information about our routes
+
+  /users/login: #endpoint starts the path
+    post: #request type (post,get,put,delete)
+      tags:
+        - Users #Adds this route to a category
+      summary: "Login endpoint (generates a token)" #At a glance information about the endpoint
+      description: "Validates user credentials (email and password), and produces a user specific token." #more in-depth info about the endpoint
+      parameters: #info about the data being sent (DONT FORGET THE 'S' in parameters)
+        - in: "body" #Where will this info come from
+          name: "body"
+          description: "Login Credentials" #What are you sending
+          required: true 
+          schema:
+            $ref: "#/definitions/LoginCredentials"
+      responses:
+        200:
+          description: "Login Successful"
+          schema:
+            $ref: "#/definitions/LoginResponse"
+          examples:
+            application/json:
+              message: "Welcome User"
+              token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOj..."
+
+  /users:
+    post:
+      tags:
+        - Users
+      summary: "Register User"
+      description: "Send in user info, to create a user profile that will be stored in the database. DOB and Address are optional fields."
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New User Information"
+          required: true
+          schema:
+            $ref: "#/definitions/UserInput"
+          
+      responses:
+        201:
+          description: "Creation Successful"
+          schema:
+            $ref: "#/definitions/UserResponse"
+          examples:
+            application/json:
+              DOB: "1900-01-01"
+              address: "123 Fun St."
+              email: "test@test1.com"
+              id: 0
+              password: "<encrypted password>"
+              role: "Admin"
+              username: "test_user"
+
+
+definitions: #Information about the shape of input and output json
+
+  LoginCredentials: #Input data required for login route
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+    required:
+      - email
+      - password
+
+  LoginResponse: #Response from /login endpoint
+    type: object
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+
+  UserInput: 
+    type: object
+    properties:
+      DOB:
+        type: string
+      address:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+
+    required:
+      - email
+      - password
+      - role
+      - username
+
+  UserResponse: 
+    type: object
+    properties:
+      DOB:
+        type: string
+      address:
+        type: string
+      email:
+        type: string
+      id:
+        type: int
+      password:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
