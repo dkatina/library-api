@@ -13,6 +13,12 @@ consumes:
 produces:
   - "application/json" #and produces json data
 
+securityDefinitions: #Describing how to add token auth to the endpoints
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+
 
 paths: #Information about our routes
 
@@ -40,7 +46,7 @@ paths: #Information about our routes
               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOj..."
 
   /users:
-    post:
+    post: #Create User Endpoint
       tags:
         - Users
       summary: "Register User"
@@ -67,6 +73,62 @@ paths: #Information about our routes
               password: "<encrypted password>"
               role: "Admin"
               username: "test_user"
+    
+    get: #Get all users Endpoint
+      tags:
+        - Users
+      summary: "Returns all users"
+      description: "Endpoint to recieve an array of user objects."
+      responses:
+        200:
+          description: "Successfully Retrieved Users"
+          schema:
+            $ref: "#/definitions/UsersResponse"
+
+    put: #Update a user
+      tags:
+        - Users
+      summary: "Update User Endpoint"
+      description: "Endpoint to update a user, requires a token, user will be identified by the token"
+      security:
+        - bearerAuth: [] #Referencing our Token Auth definition (Make sure when authorizing in Swagger you add Bearer <Token>)
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User Updates"
+          required: true
+          schema:
+            $ref: "#/definitions/UserInput"
+          
+      responses:
+        200:
+          description: "Creation Successful"
+          schema:
+            $ref: "#/definitions/UserResponse"
+          examples:
+            application/json:
+              DOB: "1900-01-01"
+              address: "123 Fun St."
+              email: "test@test1.com"
+              id: 0
+              password: "<encrypted password>"
+              role: "Admin"
+              username: "test_user"
+    
+    delete: #Delete a user
+      tags:
+        - Users
+      summary: "Delete a User"
+      description: "Delete a user, requires a token, token will be used to identify user to delete."
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
 
 
 definitions: #Information about the shape of input and output json
@@ -91,21 +153,27 @@ definitions: #Information about the shape of input and output json
       token:
         type: string
 
-  UserInput: 
+  UserInput: #Sending user Information
     type: object
     properties:
       DOB:
         type: string
+        example: "1900-01-01"
       address:
         type: string
+        example: "123 Fun St."
       email:
         type: string
+        example: "test@test1.com"
       password:
         type: string
+        example: "123"
       role:
         type: string
+        example: "Admin"
       username:
         type: string
+        example: "test_user" 
 
     required:
       - email
@@ -113,7 +181,7 @@ definitions: #Information about the shape of input and output json
       - role
       - username
 
-  UserResponse: 
+  UserResponse: #Recieve Single User Profile
     type: object
     properties:
       DOB:
@@ -123,10 +191,31 @@ definitions: #Information about the shape of input and output json
       email:
         type: string
       id:
-        type: int
+        type: integer
       password:
         type: string
       role:
         type: string
       username:
         type: string
+
+  UsersResponse: #Response for multiple users
+    type: array
+    items:
+      type: object
+      properties:
+        DOB:
+          type: string
+        address:
+          type: string
+        email:
+          type: string
+        id:
+          type: integer
+        password:
+          type: string
+        role:
+          type: string
+        username:
+          type: string
+          
