@@ -27,7 +27,7 @@ def get_item_descriptions():
 
 @items_bp.route('/<int:description_id>', methods=['POST'])
 def create_item(description_id):
-    quantity = request.args.get('qty', 1, type=int)
+    quantity = request.args.get('qty', 1, type=int) #Can also add a query parameter of qty=10
     count = 0
     while count < quantity:
         new_item = Items(desc_id=description_id) #Creating a new item

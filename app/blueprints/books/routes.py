@@ -1,4 +1,5 @@
 
+from app.util.auth import admin_required
 from . import books_bp
 from .schemas import book_schema, books_schema
 from flask import request, jsonify
@@ -9,6 +10,7 @@ from sqlalchemy import select
 
 #Create Book Endpoint
 @books_bp.route('', methods=['POST'])
+@admin_required
 def create_book():
     try:
         data = book_schema.load(request.json) #validates data and translates json object to python dictionary
@@ -23,7 +25,7 @@ def create_book():
 
 #READ BOOKS
 @books_bp.route('', methods=['GET'])
-# @cache.cached(timeout=30) #If you cache paginated routes it will cache a single page, and continue to serve that page until the cache refreshes (Somthing to think about)
+@cache.cached(timeout=30) #If you cache paginated routes it will cache a single page, and continue to serve that page until the cache refreshes (Somthing to think about)
 def get_books():
     try:
         page = int(request.args.get('page')) #Converting str nums into ints
@@ -62,7 +64,7 @@ def update_book(book_id):
 @books_bp.route('/<int:book_id>', methods=['DELETE'])
 @limiter.limit("8 per day")
 def delete_book(book_id):
-    book = db.session.get(Books,book_id)
+    book = db.session.get(Books,book_id) # .get is only for querying with a primary key
     db.session.delete(book)
     db.session.commit()
     return jsonify(f"Successfully deleted book {book_id}")

@@ -1,4 +1,5 @@
 from app.blueprints.orders import orders_bp
+from app.util.auth import token_required
 from .schemas import order_schema, orders_schema
 from flask import request, jsonify
 from marshmallow import ValidationError
@@ -9,6 +10,7 @@ from app.extensions import limiter
 
 #CREATE ORDER - Brick and mortar shop
 @orders_bp.route('', methods=['POST'])
+@token_required
 def create_order():
     try:
         data = order_schema.load(request.json)
@@ -25,7 +27,11 @@ def create_order():
 
 @orders_bp.route('/<int:order_id>/add-item/<int:description_id>', methods=['PUT'])
 def add_item(order_id, description_id):
+    #Search for an item that         doesnt belong to an order & Fits this item description
     item = db.session.query(Items).where(Items.order_id==None, Items.desc_id==description_id).first()
+
+    if not item:
+        return jsonify("Item out of stock"), 404
 
     item.order_id = order_id #Creating the relationship between this item and this order
     db.session.commit()

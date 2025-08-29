@@ -38,6 +38,10 @@ def create_user():
     except ValidationError as e:
         return jsonify(e.messages), 400 #Returning the error as a response so my client can see whats wrong.
     
+    taken = db.session.query(Users).where(Users.email==data['email']).first
+    if taken: #Checks if I got a user from the query
+        return jsonify({'message': 'email is taken'}), 400
+    
     data['password'] = generate_password_hash(data['password']) #resetting the password key's value, to the hash of the current value
 
     new_user = Users(**data) #Creating User object

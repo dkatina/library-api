@@ -1,9 +1,7 @@
-from datetime import date
-from turtle import back
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Date, DateTime, Float, ForeignKey, String, Table, Column
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 #Create a base class for our models
 class Base(DeclarativeBase):
