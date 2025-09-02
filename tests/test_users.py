@@ -35,6 +35,7 @@ class TestUsers(unittest.TestCase):
 
 
         response = self.client.post('/users', json=user_payload) #sending a test POST request using our test_client, and including the JSON body
+        print(response.json)
         self.assertEqual(response.status_code, 201) #checking if I got a 201 status
         self.assertEqual(response.json['username'], "test_user") #Checking to make sure the data that I sent in, is apart of the response.
         self.assertTrue(check_password_hash(response.json['password'], "123"))
