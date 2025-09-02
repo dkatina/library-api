@@ -7,6 +7,7 @@ on:  #Trigger whenever there is a push to my main branch
 
 
 jobs: #The actions
+
   build: 
     runs-on: ubuntu-latest #universal os, that is heavily support by developers
 
@@ -35,3 +36,32 @@ jobs: #The actions
           echo "Working Directory: $(pwd)"
           echo "Contents of Working Directory: $(ls -l)"
           echo "Contents of site-packages: $(ls -l venv/lib/python*/site-packages)"
+
+  test:
+    needs: build #Means that we need the build job to complete before we run our tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set Up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Create Virtual Environment
+        run: | 
+          python -m venv venv
+          source venv/bin/activate
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -p 'test_*.py' #Running all test files inside my test folder as long as the file i named test_<anything>.py
+
+
+
+  
