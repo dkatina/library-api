@@ -39,6 +39,7 @@ jobs: #The actions
 
   test:
     needs: build #Means that we need the build job to complete before we run our tests
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
