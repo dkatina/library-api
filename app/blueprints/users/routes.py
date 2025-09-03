@@ -31,7 +31,6 @@ def login():
 
 #CREATE USER ROUTE
 @users_bp.route('', methods=['POST']) #route servers as the trigger for the function below.
-@limiter.limit("5 per day")
 def create_user():
     try:
         data = user_schema.load(request.json)
