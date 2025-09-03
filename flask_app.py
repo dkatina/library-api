@@ -14,6 +14,8 @@ with app.app_context():
 
 #SMall comment before deploy
 
+#Triggering re-deploy to see if service goes down fully
+
 
 
 
