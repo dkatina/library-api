@@ -27,7 +27,7 @@ class Users(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(360), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(120), nullable=False)
+    password: Mapped[str] = mapped_column(String(500), nullable=False)
     DOB: Mapped[date] = mapped_column(Date, nullable=True)
     address: Mapped[str] = mapped_column(String(500), nullable=True)
     role: Mapped[str] = mapped_column(String(30), nullable=False)

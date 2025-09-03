@@ -12,5 +12,5 @@ class TestingConfig:
     CACHE_TYPE = "SimpleCache"
 
 class ProductionConfig:
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'sqlite:///app.db' #Grabbing db url from a private environment or default to sqlite if there is no environment
+    SQLALCHEMY_DATABASE_URI =  os.environ.get('SQLALCHEMY_DATABASE_URI') #Grabbing db url from a private environment or default to sqlite if there is no environment
     CACHE_TYPE = "SimpleCache"
