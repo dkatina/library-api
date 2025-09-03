@@ -2,7 +2,7 @@ from app.models import db
 from app import create_app
 
 
-app = create_app('DevelopmentConfig')
+app = create_app('ProductionConfig') #Make sure you are in production mode
 
 
 with app.app_context():
@@ -10,4 +10,3 @@ with app.app_context():
     db.create_all() #Creating our database tables
 
 
-app.run()
