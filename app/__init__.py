@@ -21,7 +21,7 @@ def create_app(config_name): #Application Factory
 
     app = Flask(__name__) #Creating base app
     app.config.from_object(f'config.{config_name}')
-    CORS(app)
+    CORS(app) #added CORS
 
 
     #initialize extensions (plugging them in)

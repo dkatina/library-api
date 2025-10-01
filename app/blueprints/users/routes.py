@@ -23,7 +23,8 @@ def login():
         token = encode_token(user.id, role=user.role)
         return jsonify({
             "message": f'Welcome {user.username}',
-            "token": token
+            "token": token,
+            "user": user_schema.dump(user) #added user object to login response
         }), 200
     
     return jsonify("Invalid email or password!"), 403
