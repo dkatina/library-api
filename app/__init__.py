@@ -7,6 +7,7 @@ from .blueprints.loans import loans_bp
 from .blueprints.orders import orders_bp
 from .blueprints.items import items_bp
 from flask_swagger_ui import get_swaggerui_blueprint #need to create a blueprint to plug into our app
+from flask_cors import CORS
 
 SWAGGER_URL = '/api/docs' #Url for exposing my swagger ui
 API_URL = '/static/swagger.yaml'
@@ -20,6 +21,7 @@ def create_app(config_name): #Application Factory
 
     app = Flask(__name__) #Creating base app
     app.config.from_object(f'config.{config_name}')
+    CORS(app)
 
 
     #initialize extensions (plugging them in)
